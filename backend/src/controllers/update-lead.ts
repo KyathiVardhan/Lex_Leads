@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 interface AuthenticatedRequest extends Request {
     userInfo?: {
-        userId: string;
+        userId?: string;
         userName: string;
         role: string;
     };
@@ -19,11 +19,10 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
             status
         } = req.body;
 
-        // Get the current user's ID and role from the authenticated request
-        const currentUserId = req.userInfo?.userId;
+        // Get the current user's role from the authenticated request
         const currentUserRole = req.userInfo?.role;
         
-        if (!currentUserId) {
+        if (!req.userInfo) {
             res.status(401).json({
                 success: false,
                 message: "User not authenticated"
@@ -40,21 +39,21 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
             return;
         }
 
-        // Convert string userId to ObjectId for database query
-        const userObjectId = new mongoose.Types.ObjectId(currentUserId);
-
         // Find the lead and check if it exists
         let existingLead;
-        
         if (currentUserRole === 'admin') {
             // Admins can update any lead
             existingLead = await AddNewLead.findById(leadId);
-        } else {
+        } else if (currentUserRole === 'sales') {
             // Sales users can update leads that are assigned to them (created_by field)
-            existingLead = await AddNewLead.findOne({ 
-                _id: leadId, 
-                created_by: userObjectId 
+            const userObjectId = new mongoose.Types.ObjectId(req.userInfo.userId);
+            existingLead = await AddNewLead.findOne({ _id: leadId, created_by: userObjectId });
+        } else {
+            res.status(403).json({
+                success: false,
+                message: 'You do not have permission to update this lead.'
             });
+            return;
         }
 
         if (!existingLead) {
@@ -67,7 +66,7 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
             return;
         }
 
-        console.log('Updating lead:', leadId, 'for user:', currentUserId);
+        console.log('Updating lead:', leadId, 'for user:', req.userInfo.userName);
         console.log('Update data:', { intrested, follow_up_conversation, status });
 
         // Update only the allowed fields
@@ -81,6 +80,49 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
             },
             { new: true, runValidators: true }
         );
+
+        // For both admin and sales, always save conversation to conversation history if follow_up_conversation is present
+        if (follow_up_conversation && follow_up_conversation.trim()) {
+            try {
+                const conversations = (await import('../models/SalesConverstions')).default;
+                let salesUserId, salesPersonName;
+                if (currentUserRole === 'admin') {
+                    salesUserId = existingLead.created_by;
+                    // Fetch sales person name from SalesUser collection
+                    const SalesUser = (await import('../models/SalesUser')).default;
+                    const salesUserDoc = await SalesUser.findById(salesUserId);
+                    salesPersonName = salesUserDoc ? salesUserDoc.name : 'Unknown';
+                } else {
+                    salesUserId = new mongoose.Types.ObjectId(req.userInfo.userId);
+                    salesPersonName = req.userInfo.userName;
+                }
+                const newConversationEntry = {
+                    conversation_notes: follow_up_conversation,
+                    conversation_date: new Date(),
+                    updated_at: new Date(),
+                    sales_person_name: salesPersonName,
+                    lead_name: existingLead.name_of_lead
+                };
+                await conversations.findOneAndUpdate(
+                    {
+                        sales_user_id: salesUserId,
+                        lead_id: leadId
+                    },
+                    {
+                        $push: { conversations: newConversationEntry },
+                        $set: { last_updated: new Date() }
+                    },
+                    {
+                        upsert: true,
+                        new: true,
+                        runValidators: true
+                    }
+                );
+            } catch (error) {
+                console.error('Error saving conversation:', error);
+                // Don't fail the main update if conversation save fails
+            }
+        }
 
         console.log('Lead updated successfully');
 

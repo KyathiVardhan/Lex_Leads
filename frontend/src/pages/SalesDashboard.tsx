@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 import { jwtDecode } from 'jwt-decode';
-import { Users, LogOut, User, Settings, Target, Plus, MessageSquare, CheckCircle, Clock, TrendingUp, BarChart3 } from 'lucide-react';
+import { Users, LogOut, User, Target, Plus, MessageSquare, CheckCircle, Clock, TrendingUp, BarChart3 } from 'lucide-react';
 
 // Activity interface to track different types of activities
 interface Activity {

@@ -13,21 +13,29 @@ export const addConversation = async (req: AuthRequest, res: Response) => {
     try {
         const { lead_id, conversation_notes } = req.body;
         const sales_user_id = req.userInfo?.userId;
+        const userRole = req.userInfo?.role;
 
-        if (!sales_user_id) {
+        if (!req.userInfo) {
             console.log('User not authenticated');
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'User not authenticated'
             });
+            return;
         }
+
+        // For admin users, use a special admin user ID
+        const finalUserId = userRole === 'admin' 
+            ? '000000000000000000000000' // Admin placeholder ID
+            : sales_user_id;
 
         if (!lead_id || !conversation_notes) {
             console.log('Missing required fields');
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Lead ID and conversation notes are required'
             });
+            return;
         }
 
         // Create new conversation entry
@@ -42,7 +50,7 @@ export const addConversation = async (req: AuthRequest, res: Response) => {
         // Use findOneAndUpdate with upsert to create or update the document
         const result = await conversations.findOneAndUpdate(
             { 
-                sales_user_id, 
+                sales_user_id: finalUserId, 
                 lead_id 
             },
             {
@@ -56,7 +64,7 @@ export const addConversation = async (req: AuthRequest, res: Response) => {
             }
         );
 
-        console.log('Conversation saved successfully:', result._id);
+        console.log('Conversation saved successfully');
 
         res.status(201).json({
             success: true,
@@ -76,37 +84,28 @@ export const addConversation = async (req: AuthRequest, res: Response) => {
 export const getConversationsByLead = async (req: AuthRequest, res: Response) => {
     try {
         const { lead_id } = req.params;
-        const sales_user_id = req.userInfo?.userId;
-
-        if (!sales_user_id) {
-            return res.status(401).json({
+        if (!req.userInfo) {
+            res.status(401).json({
                 success: false,
                 message: 'User not authenticated'
             });
+            return;
         }
-
-        const conversationDoc = await conversations.findOne({
-            lead_id,
-            sales_user_id
-        });
-
-        if (!conversationDoc) {
-            return res.status(200).json({
-                success: true,
-                data: []
-            });
+        // Fetch all conversation docs for this lead
+        const allDocs = await conversations.find({ lead_id });
+        // Aggregate all conversation entries
+        let allConversations: any[] = [];
+        for (const doc of allDocs) {
+            if (Array.isArray(doc.conversations)) {
+                allConversations = allConversations.concat(doc.conversations);
+            }
         }
-
-        // Sort conversations by date (newest first)
-        const sortedConversations = conversationDoc.conversations.sort(
-            (a, b) => new Date(b.conversation_date).getTime() - new Date(a.conversation_date).getTime()
-        );
-
+        // Sort by date (newest first)
+        allConversations.sort((a, b) => new Date(b.conversation_date).getTime() - new Date(a.conversation_date).getTime());
         res.status(200).json({
             success: true,
-            data: sortedConversations
+            data: allConversations
         });
-
     } catch (error) {
         console.error('Error fetching conversations:', error);
         res.status(500).json({

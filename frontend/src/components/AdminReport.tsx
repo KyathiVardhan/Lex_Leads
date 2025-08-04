@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -14,17 +14,16 @@ import {
   Edit,
   Save,
   X,
-  Filter,
   BarChart3,
   TrendingUp,
   Users,
-  Target,
   CheckCircle,
   XCircle,
-
+  MessageSquare,
 } from "lucide-react";
 import API from "../api/axios";
 import EditLeadModal from "./EditLeadModal";
+import ConversationHistory from "./ConversationHistory";
 
 
 // Lead data interface
@@ -94,7 +93,6 @@ const AdminLeadsReport = () => {
   const navigate = useNavigate();
   const [leads, setLeads] = useState<LeadData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [salesPersons, setSalesPersons] = useState<string[]>([]);
 
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     type_of_lead: true,
@@ -118,11 +116,10 @@ const AdminLeadsReport = () => {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [editingLead, setEditingLead] = useState<LeadData | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-
+  const [isConversationHistoryOpen, setIsConversationHistoryOpen] = useState(false);
+  const [selectedLeadForConversation, setSelectedLeadForConversation] = useState<LeadData | null>(null);
 
   // Admin-specific filters
-  const [selectedSalesPerson, setSelectedSalesPerson] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedInterest, setSelectedInterest] = useState<string>("all");
   const [selectedLeadType, setSelectedLeadType] = useState<string>("all");
@@ -151,14 +148,6 @@ const AdminLeadsReport = () => {
         // Fetch all leads data from API
         const response = await API.get("/admin/leads");
         setLeads(response.data.leads || []);
-
-        // Extract unique sales persons
-        const uniqueSalesPersons = [
-          ...new Set(
-            response.data.leads?.map((lead: LeadData) => lead.created_by) || []
-          ),
-        ] as string[];
-        setSalesPersons(uniqueSalesPersons);
       } catch (error) {
         console.error("Error fetching leads:", error);
         setLeads([]);
@@ -179,7 +168,10 @@ const AdminLeadsReport = () => {
     setIsEditModalOpen(true);
   };
 
-
+  const handleViewConversationHistory = (lead: LeadData) => {
+    setSelectedLeadForConversation(lead);
+    setIsConversationHistoryOpen(true);
+  };
 
   const handleUpdateLead = (updatedLead: LeadData) => {
     setLeads((prevLeads) =>
@@ -208,15 +200,10 @@ const AdminLeadsReport = () => {
 
     setIsQuickEditLoading(true);
     try {
-      const currentLead = leads.find((lead) => lead._id === quickEditingId);
-      if (!currentLead) {
-        console.error("Lead not found");
-        return;
-      }
-
       const response = await API.put(`/admin/leads/${quickEditingId}`, {
-        ...currentLead,
-        ...quickEditData,
+        intrested: quickEditData.intrested,
+        follow_up_conversation: quickEditData.follow_up_conversation,
+        status: quickEditData.status,
       });
 
       if (response.data.success) {
@@ -236,14 +223,6 @@ const AdminLeadsReport = () => {
 
   const handleQuickEditCancel = () => {
     setQuickEditingId(null);
-  };
-
-  const hasQuickEditChanges = (lead: LeadData) => {
-    return (
-      quickEditData.intrested !== lead.intrested ||
-      quickEditData.follow_up_conversation !== lead.follow_up_conversation ||
-      quickEditData.status !== lead.status
-    );
   };
 
   // Calculate performance metrics
@@ -891,14 +870,20 @@ const AdminLeadsReport = () => {
                                 <Edit className="w-3 h-3" />
                                 Quick Edit
                               </button>
-                                                             <button
-                                 onClick={() => handleEditLead(lead)}
-                                 className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700"
-                               >
-                                 <Eye className="w-3 h-3" />
-                                 View
-                               </button>
-
+                              <button
+                                onClick={() => handleEditLead(lead)}
+                                className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700"
+                              >
+                                <Eye className="w-3 h-3" />
+                                View
+                              </button>
+                              <button
+                                onClick={() => handleViewConversationHistory(lead)}
+                                className="flex items-center gap-1 px-2 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700"
+                              >
+                                <MessageSquare className="w-3 h-3" />
+                                History
+                              </button>
                             </>
                           )}
                         </div>
@@ -923,6 +908,16 @@ const AdminLeadsReport = () => {
         onUpdate={handleUpdateLead}
       />
 
+      {/* Conversation History Modal */}
+      <ConversationHistory
+        isOpen={isConversationHistoryOpen}
+        onClose={() => {
+          setIsConversationHistoryOpen(false);
+          setSelectedLeadForConversation(null);
+        }}
+        leadId={selectedLeadForConversation?._id || ''}
+        leadName={selectedLeadForConversation?.name_of_lead || ''}
+      />
 
     </div>
   );

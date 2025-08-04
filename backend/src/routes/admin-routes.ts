@@ -3,6 +3,7 @@ import AdminAuthMiddleware from "../middleware/admin-auth-middleware";
 import isAdminUser from "../middleware/admin-middleware";
 import getAllLeadsForAdmin from "../controllers/get-all-leads-admin";
 import updateLead from "../controllers/update-lead";
+import { addConversation, getConversationsByLead } from "../controllers/add-conversation";
 
 interface AuthenticatedRequest extends Request {
     userInfo?: {
@@ -23,5 +24,7 @@ router.get('/welcome-admin', AdminAuthMiddleware, isAdminUser, (req: Authenticat
 
 router.get('/leads', AdminAuthMiddleware, isAdminUser, getAllLeadsForAdmin);
 router.put('/leads/:leadId', AdminAuthMiddleware, isAdminUser, updateLead);
+router.post('/conversations/add', AdminAuthMiddleware, isAdminUser, addConversation);
+router.get('/conversations/lead/:lead_id', AdminAuthMiddleware, isAdminUser, getConversationsByLead);
 
 export default router; 

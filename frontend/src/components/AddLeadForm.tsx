@@ -201,7 +201,7 @@ const AddLeadForm: React.FC = () => {
       };
 
       // Make API call to backend
-      const response = await API.post('/sales/add-leads-to-sales', requestData);
+      await API.post('/sales/add-leads-to-sales', requestData);
       console.log("Lead added successfully");
       alert("Lead added successfully!");
 

@@ -127,18 +127,8 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     return 'bg-white'; // Always solid white
   };
 
-  const getAccentColor = () => {
-    return formData.role === 'admin' ? 'bg-amber-600' : 'bg-blue-600';
-  };
-
   const getButtonGradient = () => {
-    return formData.role === 'admin'
-      ? 'from-amber-600 to-yellow-500 hover:from-amber-700 hover:to-yellow-600 focus:ring-amber-400'
-      : 'from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 focus:ring-blue-400';
-  };
-
-  const getIconColor = () => {
-    return formData.role === 'admin' ? 'text-amber-300' : 'text-blue-300';
+    return formData.role === 'admin' ? 'from-amber-500 to-amber-600' : 'from-blue-500 to-blue-600';
   };
 
   const getCardClasses = () => {

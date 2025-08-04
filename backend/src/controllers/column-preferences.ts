@@ -17,19 +17,21 @@ export const getColumnPreferences = async (req: AuthenticatedRequest, res: Respo
         const userId = req.userInfo?.userId;
 
         if (!userId) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'User not authenticated'
             });
+            return;
         }
 
         const user = await SalesUser.findById(userId).select('columnPreferences');
 
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
 
         // Return default preferences if none are set
@@ -72,17 +74,19 @@ export const saveColumnPreferences = async (req: AuthenticatedRequest, res: Resp
         const { columnPreferences } = req.body;
 
         if (!userId) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'User not authenticated'
             });
+            return;
         }
 
         if (!columnPreferences || typeof columnPreferences !== 'object') {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Column preferences are required'
             });
+            return;
         }
 
         // Validate the structure of columnPreferences
@@ -95,10 +99,11 @@ export const saveColumnPreferences = async (req: AuthenticatedRequest, res: Resp
 
         for (const field of requiredFields) {
             if (typeof columnPreferences[field] !== 'boolean') {
-                return res.status(400).json({
+                res.status(400).json({
                     success: false,
                     message: `Invalid value for ${field}. Must be a boolean.`
                 });
+                return;
             }
         }
 
@@ -112,10 +117,11 @@ export const saveColumnPreferences = async (req: AuthenticatedRequest, res: Resp
         ).select('columnPreferences');
 
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
 
         res.status(200).json({

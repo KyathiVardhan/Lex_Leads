@@ -4,6 +4,8 @@ export interface ConversationEntry {
     conversation_notes: string;
     conversation_date: Date;
     updated_at: Date;
+    sales_person_name: string;
+    lead_name: string;
 }
 
 export interface SalesConverstions extends Document {
@@ -26,7 +28,15 @@ const conversationEntrySchema = new Schema<ConversationEntry>({
     updated_at: {
         type: Date,
         default: Date.now,
-    }
+    },
+    sales_person_name: {
+        type: String,
+        required: true,
+    },
+    lead_name: {
+        type: String,
+        required: true,
+    },
 });
 
 const salesConverstionsSchema = new Schema<SalesConverstions>({

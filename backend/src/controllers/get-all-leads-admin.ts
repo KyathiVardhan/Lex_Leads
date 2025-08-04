@@ -3,7 +3,7 @@ import AddNewLead from "../models/AddNewLead";
 import SalesUser from "../models/SalesUser";
 import { Types } from "mongoose";
 
-const getAllLeadsForAdmin = async (req: Request, res: Response) => {
+const getAllLeadsForAdmin = async (_req: Request, res: Response) => {
   try {
     // Fetch all leads and populate the created_by field with sales person's name and email
     const leads = await AddNewLead.find()

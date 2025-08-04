@@ -67,19 +67,6 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
     return Object.keys(newErrors).length === 0;
   };
 
-  const saveConversation = async (conversationNotes: string) => {
-    if (!lead || !conversationNotes.trim()) return;
-    
-    try {
-      const response = await API.post('/sales/conversations/add', {
-        lead_id: lead._id,
-        conversation_notes: conversationNotes
-      });
-    } catch (error) {
-      console.error('Error saving conversation:', error);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -95,7 +82,7 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
             formData.follow_up_conversation !== originalFollowUp &&
             formData.follow_up_conversation.trim()) {
           console.log('Conversation changed, saving to history...');
-          await saveConversation(formData.follow_up_conversation);
+          // Remove saveConversation and all its usages after a lead update
         }
         
         onUpdate(response.data.data);

@@ -213,19 +213,6 @@ const SalesPersonReport = () => {
     setQuickEditData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const saveConversation = async (conversationNotes: string) => {
-    if (!quickEditingId || !conversationNotes.trim()) return;
-    
-    try {
-      const response = await API.post('/sales/conversations/add', {
-        lead_id: quickEditingId,
-        conversation_notes: conversationNotes
-      });
-    } catch (error) {
-      console.error('Error saving conversation:', error);
-    }
-  };
-
   const hasQuickEditChanges = (lead: LeadData) => {
     if (quickEditingId !== lead._id) return false;
     
@@ -247,15 +234,6 @@ const SalesPersonReport = () => {
 
       if (response.data.success) {
         
-        // Check if follow up conversation has changed and save to conversation history
-        const originalLead = leads.find(lead => lead._id === quickEditingId);
-        if (originalLead && 
-            quickEditData.follow_up_conversation !== originalLead.follow_up_conversation &&
-            quickEditData.follow_up_conversation.trim()) {
-          console.log('Conversation changed in quick edit, saving to history...');
-          await saveConversation(quickEditData.follow_up_conversation);
-        }
-
         setLeads((prevLeads) =>
           prevLeads.map((lead) =>
             lead._id === quickEditingId ? response.data.data : lead
