@@ -139,6 +139,8 @@ const AddLeadForm: React.FC = () => {
     if (formData.source_of_lead === "referral") {
       if (!formData.reference_name.trim()) {
         newErrors.reference_name = "Reference name is required";
+      } else if (formData.reference_name.trim().length < 3) {
+        newErrors.reference_name = "Reference name must be at least 3 characters";
       }
       if (!formData.reference_phone_number) {
         newErrors.reference_phone_number = "Reference phone number is required";
@@ -189,19 +191,18 @@ const AddLeadForm: React.FC = () => {
         phone_number_of_lead: formData.phone_number_of_lead,
         email_of_lead: formData.email_of_lead,
         source_of_lead: formData.source_of_lead,
-        reference_name: formData.reference_name,
-        reference_phone_number: formData.reference_phone_number,
         intrested: 'WARM', // Default value as per model
         follow_up_conversation: '', // Default empty string
-        status: 'Open' // Default status
+        status: 'Open', // Default status
+        ...(formData.source_of_lead === 'referral' && {
+          reference_name: formData.reference_name,
+          reference_phone_number: formData.reference_phone_number,
+        })
       };
-
-      console.log("Sending data to API:", requestData);
 
       // Make API call to backend
       const response = await API.post('/sales/add-leads-to-sales', requestData);
-
-      console.log("Form submitted successfully:", response.data);
+      console.log("Lead added successfully");
       alert("Lead added successfully!");
 
       // Reset form
@@ -260,7 +261,7 @@ const AddLeadForm: React.FC = () => {
           <div className="flex items-center justify-between mb-8">
             <button
               onClick={handleBackToDashboard}
-              className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors duration-200"
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back to Dashboard</span>
@@ -525,7 +526,7 @@ const AddLeadForm: React.FC = () => {
                 <div>
                   <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                     <Users className="w-4 h-4 text-blue-600" />
-                    Reference Name
+                    Referral Name
                   </label>
                   <input
                     type="text"
@@ -550,7 +551,7 @@ const AddLeadForm: React.FC = () => {
                 <div>
                   <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                     <Phone className="w-4 h-4 text-blue-600" />
-                    Reference Phone Number
+                    Referral Phone Number
                   </label>
                   <input
                     type="tel"
@@ -580,7 +581,7 @@ const AddLeadForm: React.FC = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-full py-4 px-6 rounded-lg text-white font-semibold text-lg transition-all duration-200 ${
+                className={`w-full py-4 px-6 rounded-lg text-white font-semibold text-lg transition-all duration-200 cursor-pointer ${
                   isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transform hover:scale-[1.02] active:scale-[0.98]"

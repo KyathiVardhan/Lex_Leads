@@ -61,7 +61,7 @@ const ConversationHistory: React.FC<ConversationHistoryProps> = ({
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
             <X size={24} />
           </button>
@@ -112,7 +112,7 @@ const ConversationHistory: React.FC<ConversationHistoryProps> = ({
         <div className="flex items-center justify-end p-6 border-t border-gray-200">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
           >
             Close
           </button>

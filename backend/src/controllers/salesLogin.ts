@@ -19,7 +19,6 @@ interface JwtPayload {
 
 const salesLogin = async (req: Request<{}, {}, LoginRequest>, res: Response): Promise<void> => {
     try {
-        console.log("Sales login attempt:", { email: req.body.email });
         
         // get email and password from request body
         const {email, password} = req.body;
@@ -37,26 +36,25 @@ const salesLogin = async (req: Request<{}, {}, LoginRequest>, res: Response): Pr
         // Check if user exists with the given email
         const user = await SalesUser.findOne({ email });
         if (!user) {
-            console.log("User not found with email:", email);
+            console.log("User not found with email");
             res.status(401).json({
                 success: false,
                 message: "Login failed"
             });
             return;
         }
-        console.log("User found:", { name: user.name, role: user.role });
+        console.log("User found");
 
         // Compare password using bcrypt
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            console.log("Password mismatch for user:", email);
+            console.log("Password mismatch for user");
             res.status(401).json({
                 success: false,
                 message: "Login failed"
             });
             return;
         }
-        console.log("Password verified successfully for user:", email);
 
         // Generate JWT token
         const accessToken = jwt.sign(
@@ -65,7 +63,6 @@ const salesLogin = async (req: Request<{}, {}, LoginRequest>, res: Response): Pr
             { expiresIn: "1d" }
         );
 
-        console.log("Sales login successful for user:", email);
         res.status(200).json({
             success: true,
             message: "Sales person logged in successful",
@@ -73,7 +70,6 @@ const salesLogin = async (req: Request<{}, {}, LoginRequest>, res: Response): Pr
         });
         
     } catch (error) {
-        console.error("Login error:", error);
         res.status(500).json({
             success: false,
             message: "Internal server error", 

@@ -14,12 +14,6 @@ export const addConversation = async (req: AuthRequest, res: Response) => {
         const { lead_id, conversation_notes } = req.body;
         const sales_user_id = req.userInfo?.userId;
 
-        console.log('Received conversation request:', {
-            lead_id,
-            conversation_notes: conversation_notes?.substring(0, 50) + '...',
-            sales_user_id
-        });
-
         if (!sales_user_id) {
             console.log('User not authenticated');
             return res.status(401).json({
@@ -29,7 +23,7 @@ export const addConversation = async (req: AuthRequest, res: Response) => {
         }
 
         if (!lead_id || !conversation_notes) {
-            console.log('Missing required fields:', { lead_id: !!lead_id, conversation_notes: !!conversation_notes });
+            console.log('Missing required fields');
             return res.status(400).json({
                 success: false,
                 message: 'Lead ID and conversation notes are required'

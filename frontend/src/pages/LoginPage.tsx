@@ -72,8 +72,6 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
       ? '/admin/welcome-admin'
       : '/login-sales/welcome-sales';
 
-    console.log('Attempting login with:', { email: formData.email, role: formData.role, endpoint: loginEndpoint });
-
     // Step 1: Login
     const res = await API.post(loginEndpoint, {
       email: formData.email,
@@ -238,7 +236,7 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
             <button
               type="button"
               onClick={() => handleRoleChange('sales')}
-              className={`relative flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 px-2 sm:px-4 rounded-md transition-all duration-300 ease-in-out text-sm sm:text-base font-medium ${
+              className={`relative flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 px-2 sm:px-4 rounded-md transition-all duration-300 ease-in-out text-sm sm:text-base font-medium cursor-pointer ${
                 formData.role === 'sales'
                   ? 'text-white transform scale-105'
                   : 'text-gray-700 hover:text-gray-900 hover:bg-white/20'
@@ -252,7 +250,7 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
             <button
               type="button"
               onClick={() => handleRoleChange('admin')}
-              className={`relative flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 px-2 sm:px-4 rounded-md transition-all duration-300 ease-in-out text-sm sm:text-base font-medium ${
+              className={`relative flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 px-2 sm:px-4 rounded-md transition-all duration-300 ease-in-out text-sm sm:text-base font-medium cursor-pointer ${
                 formData.role === 'admin'
                   ? 'text-white transform scale-105'
                   : 'text-gray-700 hover:text-gray-900 hover:bg-white/20'
@@ -303,7 +301,7 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200 cursor-pointer"
               >
                 {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
@@ -320,7 +318,7 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
               />
               <span className="ml-2 text-xs sm:text-sm text-gray-600">Remember me</span>
             </label>
-            <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-500 transition-colors duration-200 self-start sm:self-auto">
+            <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-500 transition-colors duration-200 self-start sm:self-auto cursor-pointer">
               Forgot password?
             </button>
           </div>
@@ -330,7 +328,7 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
             type="button"
             onClick={handleSubmit}
             disabled={isLoading}
-            className={`w-full py-2 sm:py-3 px-4 rounded-lg font-medium text-white transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r text-sm sm:text-base ${getButtonGradient()}`}
+            className={`w-full py-2 sm:py-3 px-4 rounded-lg font-medium text-white transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r text-sm sm:text-base cursor-pointer ${getButtonGradient()}`}
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-1 sm:gap-2">
@@ -375,7 +373,7 @@ const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         <div className="mt-6 sm:mt-8 text-center">
           <p className="text-gray-500 text-xs sm:text-sm">
             Don't have an account?{' '}
-            <button className="text-blue-600 hover:text-blue-500 transition-colors duration-200 font-medium text-xs sm:text-sm">
+            <button className="text-blue-600 hover:text-blue-500 transition-colors duration-200 font-medium text-xs sm:text-sm cursor-pointer">
               Contact your administrator
             </button>
           </p>

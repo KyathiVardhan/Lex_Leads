@@ -40,7 +40,7 @@ router.post("/add-sales", AdminAuthMiddleware, isAdminUser, async (req: Request<
         
         // Validate required fields
         if (!name || !email || !password || !role) {
-            console.log("Missing required fields:", { name: !!name, email: !!email, password: !!password, role: !!role });
+            console.log("Missing required fields");
             res.status(400).json({
                 success: false,
                 message: "All fields (name, email, password, role) are required"
@@ -51,7 +51,7 @@ router.post("/add-sales", AdminAuthMiddleware, isAdminUser, async (req: Request<
         // Check if user already exists
         const existingUser = await SalesUser.findOne({ email });
         if (existingUser) {
-            console.log("User already exists with email:", email);
+            console.log("User already exists with email");
             res.status(400).json({
                 success: false,
                 message: "User with this email already exists"
@@ -69,7 +69,7 @@ router.post("/add-sales", AdminAuthMiddleware, isAdminUser, async (req: Request<
         });
 
         await newSalesUser.save();
-        console.log("Sales user created successfully:", { id: newSalesUser._id, name: newSalesUser.name, email: newSalesUser.email });
+        console.log("Sales user created successfully");
 
         res.status(201).json({
             success: true,

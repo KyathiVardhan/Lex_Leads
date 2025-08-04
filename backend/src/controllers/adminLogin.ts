@@ -16,7 +16,6 @@ interface JwtPayload {
 
 const adminLogin = async (req: Request<{}, {}, LoginRequest>, res: Response): Promise<void> => {
     try {
-        console.log("Admin login attempt:", { email: req.body.email });
         
         // get email and password from request body
         const {email, password} = req.body;
@@ -47,12 +46,6 @@ const adminLogin = async (req: Request<{}, {}, LoginRequest>, res: Response): Pr
             });
         }
         else{
-            console.log("Admin credentials failed:", { 
-                providedEmail: email, 
-                expectedEmail: process.env.ADMIN_EMAIL,
-                emailMatch: email === process.env.ADMIN_EMAIL,
-                passwordMatch: password === process.env.ADMIN_PASSWORD
-            });
             res.status(401).json({
                 success: false,
                 message: "Invalid credentials"

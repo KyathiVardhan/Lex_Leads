@@ -233,7 +233,7 @@ export default function SalesDashboard() {
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white px-4 sm:px-5 py-2 rounded-xl transition-all duration-200 text-sm sm:text-base shadow-md hover:shadow-lg font-medium"
+                className="flex items-center space-x-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white px-4 sm:px-5 py-2 rounded-xl transition-all duration-200 text-sm sm:text-base shadow-md hover:shadow-lg font-medium cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
@@ -358,12 +358,12 @@ export default function SalesDashboard() {
             <div className="space-y-3">
               <button
                 onClick={() => navigate('/addlead')}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base cursor-pointer"
               >
                 <User className="w-4 h-4" />
                 <span>Add New Lead</span>
               </button>
-              <button onClick={() => navigate('/salespersonreport')} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base">
+              <button onClick={() => navigate('/salespersonreport')} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base cursor-pointer">
                 <Target className="w-4 h-4" />
                 <span>View Reports</span>
               </button>

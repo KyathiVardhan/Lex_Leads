@@ -201,14 +201,8 @@ const SalesPersonReport = () => {
 
   // Quick edit functions
   const handleQuickEdit = (lead: LeadData) => {
-    console.log('Starting quick edit for lead:', lead._id);
     setQuickEditingId(lead._id);
     setQuickEditData({
-      intrested: lead.intrested,
-      follow_up_conversation: lead.follow_up_conversation,
-      status: lead.status,
-    });
-    console.log('Quick edit data set:', {
       intrested: lead.intrested,
       follow_up_conversation: lead.follow_up_conversation,
       status: lead.status,
@@ -216,7 +210,6 @@ const SalesPersonReport = () => {
   };
 
   const handleQuickEditChange = (field: keyof QuickEditData, value: string) => {
-    console.log('Quick edit change:', field, value);
     setQuickEditData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -224,12 +217,10 @@ const SalesPersonReport = () => {
     if (!quickEditingId || !conversationNotes.trim()) return;
     
     try {
-      console.log('Saving conversation for lead:', quickEditingId, 'Notes:', conversationNotes);
       const response = await API.post('/sales/conversations/add', {
         lead_id: quickEditingId,
         conversation_notes: conversationNotes
       });
-      console.log('Conversation saved successfully:', response.data);
     } catch (error) {
       console.error('Error saving conversation:', error);
     }
@@ -244,31 +235,17 @@ const SalesPersonReport = () => {
       quickEditData.status !== lead.status
     );
     
-    console.log('Checking changes for lead:', lead._id, 'Has changes:', hasChanges);
-    console.log('Current quickEditData:', quickEditData);
-    console.log('Original lead data:', {
-      intrested: lead.intrested,
-      follow_up_conversation: lead.follow_up_conversation,
-      status: lead.status,
-    });
-    
     return hasChanges;
   };
 
   const handleQuickEditSave = async () => {
     if (!quickEditingId) return;
 
-    console.log('Saving quick edit for lead:', quickEditingId);
-    console.log('Quick edit data to save:', quickEditData);
-
     setIsQuickEditLoading(true);
     try {
       const response = await API.put(`/sales/leads/${quickEditingId}`, quickEditData);
 
-      console.log('API Response:', response);
-
       if (response.data.success) {
-        console.log('Quick edit saved successfully:', response.data);
         
         // Check if follow up conversation has changed and save to conversation history
         const originalLead = leads.find(lead => lead._id === quickEditingId);
@@ -397,7 +374,7 @@ const SalesPersonReport = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
           <button
             onClick={handleBackToDashboard}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors duration-200 font-medium"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors duration-200 font-medium cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Dashboard</span>
@@ -440,7 +417,7 @@ const SalesPersonReport = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowColumnMenu(!showColumnMenu)}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium cursor-pointer"
                 >
                   <Eye size={16} />
                   <span className="hidden sm:inline">Columns</span>
@@ -739,14 +716,14 @@ const SalesPersonReport = () => {
                                     isQuickEditLoading ||
                                     !hasQuickEditChanges(lead)
                                   }
-                                  className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                  className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                                 >
                                   <Save size={12} />
                                   {isQuickEditLoading ? "Saving..." : "Update"}
                                 </button>
                                 <button
                                   onClick={handleQuickEditCancel}
-                                  className="flex items-center gap-1 px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
+                                  className="flex items-center gap-1 px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors cursor-pointer"
                                 >
                                   <X size={12} />
                                   Cancel
@@ -756,21 +733,21 @@ const SalesPersonReport = () => {
                               <>
                                 <button
                                   onClick={() => handleQuickEdit(lead)}
-                                  className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
+                                  className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors cursor-pointer"
                                 >
                                   <Edit size={12} />
                                   Quick Edit
                                 </button>
                                 <button
                                   onClick={() => handleEditLead(lead)}
-                                  className="flex items-center gap-1 px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700 transition-colors"
+                                  className="flex items-center gap-1 px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700 transition-colors cursor-pointer"
                                 >
                                   <Edit size={12} />
                                   View Edit
                                 </button>
                                 <button
                                   onClick={() => handleViewConversationHistory(lead)}
-                                  className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors"
+                                  className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors cursor-pointer"
                                 >
                                   <MessageSquare size={12} />
                                   History

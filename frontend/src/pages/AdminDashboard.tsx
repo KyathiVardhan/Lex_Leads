@@ -155,13 +155,11 @@ export default function AdminDashboard() {
         throw new Error('No authentication token found');
       }
 
-      console.log('Sending request to create sales user:', salesUserData);
       const response = await API.post('/admin/add-sales', salesUserData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log('Response received:', response.data);
 
       setMessage({ type: 'success', text: 'Sales user created successfully!' });
       setSalesUserData({ name: '', email: '', password: '', role: 'sales' });
@@ -210,7 +208,7 @@ export default function AdminDashboard() {
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white px-4 sm:px-5 py-2 rounded-xl transition-all duration-200 text-sm sm:text-base shadow-md hover:shadow-lg font-medium"
+                className="flex items-center space-x-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white px-4 sm:px-5 py-2 rounded-xl transition-all duration-200 text-sm sm:text-base shadow-md hover:shadow-lg font-medium cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
@@ -316,12 +314,12 @@ export default function AdminDashboard() {
             <div className="space-y-3">
               <button 
                 onClick={() => setShowCreateForm(true)}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-105 cursor-pointer"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Add Sales Person</span>
               </button>
-              <button onClick={() => navigate('/viewreport')} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-105">
+              <button onClick={() => navigate('/viewreport')} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-105 cursor-pointer">
                 <Users className="w-4 h-4"/>
                 <span>View All Users</span>
               </button>
@@ -341,7 +339,7 @@ export default function AdminDashboard() {
                 <h3 className="text-xl sm:text-2xl font-bold text-slate-900">Add Sales User</h3>
                 <button
                   onClick={() => setShowCreateForm(false)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors duration-200"
+                  className="text-slate-400 hover:text-slate-600 transition-colors duration-200 cursor-pointer"
                 >
                   <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
@@ -415,7 +413,7 @@ export default function AdminDashboard() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-sm sm:text-base"
+                  className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-sm sm:text-base cursor-pointer"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center space-x-2">
