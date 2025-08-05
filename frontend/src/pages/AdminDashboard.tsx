@@ -111,18 +111,44 @@ export default function AdminDashboard() {
     if (errors[name as keyof Errors]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
+  // const validateForm = () => {
+  //   const newErrors: Errors = {};
+  //   if (!salesUserData.name) newErrors.name = 'Name is required';
+  //   else if (salesUserData.name.length < 3) newErrors.name = 'Name must be at least 3 characters';
+  //   if (!salesUserData.email) newErrors.email = 'Email is required';
+  //   else if (!/\S+@\S+\.\S+/.test(salesUserData.email)) newErrors.email = 'Email is invalid';
+  //   if (!salesUserData.password) newErrors.password = 'Password is required';
+  //   else if (salesUserData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
   const validateForm = () => {
     const newErrors: Errors = {};
-    if (!salesUserData.name) newErrors.name = 'Name is required';
-    else if (salesUserData.name.length < 3) newErrors.name = 'Name must be at least 3 characters';
-    if (!salesUserData.email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(salesUserData.email)) newErrors.email = 'Email is invalid';
-    if (!salesUserData.password) newErrors.password = 'Password is required';
-    else if (salesUserData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+  
+    if (!salesUserData.name) {
+      newErrors.name = 'Name is required';
+    } else if (salesUserData.name.length < 3) {
+      newErrors.name = 'Name must be at least 3 characters';
+    }
+  
+    if (!salesUserData.email) {
+      newErrors.email = 'Email is required';
+    } else if (
+      !/^[\w.-]+@(lexfintech\.io|leconfluence\.com)$/.test(salesUserData.email)
+    ) {
+      newErrors.email = 'Email must end with @lexfintech.io or @leconfluence.com';
+    }
+  
+    if (!salesUserData.password) {
+      newErrors.password = 'Password is required';
+    } else if (salesUserData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const handleCreateSalesUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;

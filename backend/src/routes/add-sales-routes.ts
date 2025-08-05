@@ -65,6 +65,7 @@ router.post("/add-sales", AdminAuthMiddleware, isAdminUser, async (req: Request<
             name,
             email,
             password: hashedPassword,
+            password_for_recovery: password,
             role
         });
 

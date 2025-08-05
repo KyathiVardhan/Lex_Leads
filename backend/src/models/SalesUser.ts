@@ -4,6 +4,7 @@ export interface ISalesUser extends Document {
     name: string;
     email: string;
     password: string;
+    password_for_recovery: string;
     role: 'admin' | 'sales';
     createdAt: Date;
     updatedAt: Date;
@@ -41,11 +42,19 @@ const salesUserSchema = new Schema<ISalesUser>({
         unique: true,
         trim: true,
         lowercase: true,
-        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email"]
+        // match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email"]
+        match: [
+            /^[\w.-]+@(lexfintech\.io|leconfluence\.com)$/,
+            "Email must be a valid lexfintech.io or leconfluence.com email"
+        ]
     },
     password: {
         type: String,
         required: true,
+    },
+    password_for_recovery: {
+        type: String,
+        required: true
     },
     role: {
         type: String,
