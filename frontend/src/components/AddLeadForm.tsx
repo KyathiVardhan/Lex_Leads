@@ -24,6 +24,7 @@ interface FormData {
   phone_number_of_lead: string;
   email_of_lead: string;
   source_of_lead: "instagram" | "linkedin" | "referral" | "";
+  source_url: string;
   reference_name: string;
   reference_phone_number: string;
 }
@@ -44,6 +45,7 @@ const AddLeadForm: React.FC = () => {
     phone_number_of_lead: "",
     email_of_lead: "",
     source_of_lead: "",
+    source_url: "",
     reference_name: "",
     reference_phone_number: "",
   });
@@ -216,6 +218,7 @@ const AddLeadForm: React.FC = () => {
         phone_number_of_lead: "",
         email_of_lead: "",
         source_of_lead: "",
+        source_url: "",
         reference_name: "",
         reference_phone_number: "",
       });
