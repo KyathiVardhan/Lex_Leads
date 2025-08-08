@@ -9,6 +9,7 @@ export interface IAddNewLead extends Document {
     phone_number_of_lead: string;
     email_of_lead: string;
     source_of_lead: string;
+    source_url: string;
     reference_name: string;
     reference_phone_number: string;
     intrested: 'HOT' | 'COLD' | 'WARM' | 'NOT INTERESTED';
@@ -68,6 +69,10 @@ const addNewLeadSchema = new Schema<IAddNewLead>({
         required: true,
         trim: true,
         minlength: 3
+    },
+    source_url: {
+        type: String,
+        trime: true
     },
     reference_name: {
         type: String,

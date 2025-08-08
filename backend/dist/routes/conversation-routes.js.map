@@ -1,1 +1,0 @@
-{"version":3,"file":"conversation-routes.js","sourceRoot":"","sources":["../../src/routes/conversation-routes.ts"],"names":[],"mappings":";;;;;AAAA,sDAA8B;AAC9B,sEAA0F;AAC1F,gGAAsE;AAEtE,MAAM,MAAM,GAAG,iBAAO,CAAC,MAAM,EAAE,CAAC;AAGhC,MAAM,CAAC,IAAI,CAAC,MAAM,EAAE,+BAAmB,EAAE,kCAAe,CAAC,CAAC;AAG1D,MAAM,CAAC,GAAG,CAAC,gBAAgB,EAAE,+BAAmB,EAAE,yCAAsB,CAAC,CAAC;AAE1E,kBAAe,MAAM,CAAC"}

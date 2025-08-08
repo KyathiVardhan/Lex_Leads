@@ -1,1 +1,0 @@
-{"version":3,"file":"CustomLeadType.d.ts","sourceRoot":"","sources":["../../src/models/CustomLeadType.ts"],"names":[],"mappings":"AAAA,OAAO,QAAQ,EAAE,EAAE,QAAQ,EAAU,MAAM,UAAU,CAAC;AAEtD,MAAM,WAAW,eAAgB,SAAQ,QAAQ;IAC7C,aAAa,EAAE,QAAQ,CAAC,KAAK,CAAC,QAAQ,CAAC;IACvC,WAAW,EAAE,MAAM,CAAC;IACpB,UAAU,EAAE,IAAI,CAAC;CACpB;AAwBD,QAAA,MAAM,cAAc;;;;OAA0E,CAAC;AAE/F,eAAe,cAAc,CAAC"}
