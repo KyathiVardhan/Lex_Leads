@@ -10,6 +10,7 @@ import {
   Award,
   ArrowLeft,
   Share2,
+  Link,
   Users,
 } from "lucide-react";
 import API from "../api/axios";
@@ -87,32 +88,32 @@ const AddLeadForm: React.FC = () => {
     const newErrors: FormErrors = {};
 
     //Fileds Validations
-    
+
     if (!formData.type_of_lead) {
       newErrors.type_of_lead = "Please select a type of lead";
     }
 
-    
+
     if (formData.type_of_lead === "other" && !formData.custom_type.trim()) {
       newErrors.custom_type = "Please enter a custom lead type";
     }
 
-    
+
     if (!formData.project_name.trim()) {
       newErrors.project_name = "Project name is required";
     }
 
-    
+
     if (!formData.name_of_lead.trim()) {
       newErrors.name_of_lead = "Lead name is required";
     }
 
-    
+
     if (!formData.designation_of_lead.trim()) {
       newErrors.designation_of_lead = "Designation is required";
     }
 
-    
+
     if (!formData.company_name.trim()) {
       newErrors.company_name = "Company name is required";
     }
@@ -124,7 +125,7 @@ const AddLeadForm: React.FC = () => {
       newErrors.phone_number_of_lead = "Phone number must be exactly 10 digits";
     }
 
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
     if (!formData.email_of_lead) {
       newErrors.email_of_lead = "Email is required";
@@ -135,6 +136,18 @@ const AddLeadForm: React.FC = () => {
     // Source validation
     if (!formData.source_of_lead) {
       newErrors.source_of_lead = "Please select a source";
+    }
+
+    if (formData.source_of_lead === "linkedin" || formData.source_of_lead === "instagram") {
+      if (!formData.source_url?.trim()) {
+        newErrors.source_url = "Source URL is required for LinkedIn or Instagram";
+      } else {
+        try {
+          new URL(formData.source_url);
+        } catch {
+          newErrors.source_url = "Please enter a valid URL";
+        }
+      }
     }
 
     // Reference validation - only required if source is referral
@@ -193,6 +206,7 @@ const AddLeadForm: React.FC = () => {
         phone_number_of_lead: formData.phone_number_of_lead,
         email_of_lead: formData.email_of_lead,
         source_of_lead: formData.source_of_lead,
+        source_url: formData.source_url,
         intrested: 'WARM', // Default value as per model
         follow_up_conversation: '', // Default empty string
         status: 'Open', // Default status
@@ -227,22 +241,22 @@ const AddLeadForm: React.FC = () => {
       navigate("/sales/dashboard");
     } catch (error: any) {
       console.error("Submission error:", error);
-      
+
       // Handle different types of errors
       if (error.response) {
         // Server responded with error status
         const errorData = error.response.data;
         let errorMessage = "Error submitting form. Please try again.";
-        
+
         if (errorData?.message) {
           errorMessage = errorData.message;
         }
-        
+
         // If there are specific validation errors, show them
         if (errorData?.errors && Array.isArray(errorData.errors)) {
           errorMessage = errorData.errors.join(', ');
         }
-        
+
         alert(errorMessage);
       } else if (error.request) {
         // Network error
@@ -292,11 +306,10 @@ const AddLeadForm: React.FC = () => {
                   name="type_of_lead"
                   value={formData.type_of_lead}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 bg-white ${
-                    errors.type_of_lead
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 bg-white ${errors.type_of_lead
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                 >
                   <option value="">Select type of lead</option>
                   <option value="lead">Lead</option>
@@ -327,11 +340,10 @@ const AddLeadForm: React.FC = () => {
                     name="custom_type"
                     value={formData.custom_type}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                      errors.custom_type
+                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.custom_type
                         ? "border-red-500 focus:border-red-500"
                         : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                     placeholder="Enter custom lead type"
                   />
                   {errors.custom_type && (
@@ -353,11 +365,10 @@ const AddLeadForm: React.FC = () => {
                   name="project_name"
                   value={formData.project_name}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                    errors.project_name
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.project_name
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                   placeholder="Enter project name"
                 />
                 {errors.project_name && (
@@ -378,11 +389,10 @@ const AddLeadForm: React.FC = () => {
                   name="name_of_lead"
                   value={formData.name_of_lead}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                    errors.name_of_lead
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.name_of_lead
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                   placeholder="Enter lead name"
                 />
                 {errors.name_of_lead && (
@@ -403,11 +413,10 @@ const AddLeadForm: React.FC = () => {
                   name="designation_of_lead"
                   value={formData.designation_of_lead}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                    errors.designation_of_lead
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.designation_of_lead
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                   placeholder="Enter designation"
                 />
                 {errors.designation_of_lead && (
@@ -428,11 +437,10 @@ const AddLeadForm: React.FC = () => {
                   name="company_name"
                   value={formData.company_name}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                    errors.company_name
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.company_name
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                   placeholder="Enter company name"
                 />
                 {errors.company_name && (
@@ -453,11 +461,10 @@ const AddLeadForm: React.FC = () => {
                   name="phone_number_of_lead"
                   value={formData.phone_number_of_lead}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                    errors.phone_number_of_lead
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.phone_number_of_lead
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                   placeholder="Enter 10-digit phone number"
                   maxLength={10}
                 />
@@ -479,11 +486,10 @@ const AddLeadForm: React.FC = () => {
                   name="email_of_lead"
                   value={formData.email_of_lead}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                    errors.email_of_lead
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.email_of_lead
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                   placeholder="Enter email ending with .com"
                 />
                 {errors.email_of_lead && (
@@ -503,11 +509,10 @@ const AddLeadForm: React.FC = () => {
                   name="source_of_lead"
                   value={formData.source_of_lead}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 bg-white ${
-                    errors.source_of_lead
+                  className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 bg-white ${errors.source_of_lead
                       ? "border-red-500 focus:border-red-500"
                       : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                 >
                   <option value="">Select source</option>
                   <option value="instagram">Instagram</option>
@@ -520,6 +525,32 @@ const AddLeadForm: React.FC = () => {
                   </p>
                 )}
               </div>
+
+              {/* Source URL for Instagram/LinkedIn */}
+              {(formData.source_of_lead === "linkedin" || formData.source_of_lead === "instagram") && (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                    <Link className="w-4 h-4 text-blue-600" />
+                    Source URL
+                  </label>
+                  <input
+                    type="text"
+                    name="source_url"
+                    value={formData.source_url}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.source_url
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
+                      } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                    placeholder="https://example.com"
+                  />
+                  {errors.source_url && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.source_url}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Reference Fields - Only show when source is referral */}
@@ -536,11 +567,10 @@ const AddLeadForm: React.FC = () => {
                     name="reference_name"
                     value={formData.reference_name}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                      errors.reference_name
+                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.reference_name
                         ? "border-red-500 focus:border-red-500"
                         : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                     placeholder="Enter reference name"
                   />
                   {errors.reference_name && (
@@ -561,11 +591,10 @@ const AddLeadForm: React.FC = () => {
                     name="reference_phone_number"
                     value={formData.reference_phone_number}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${
-                      errors.reference_phone_number
+                    className={`w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 ${errors.reference_phone_number
                         ? "border-red-500 focus:border-red-500"
                         : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-100`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-100`}
                     placeholder="Enter 10-digit reference phone number"
                     maxLength={10}
                   />
@@ -584,11 +613,10 @@ const AddLeadForm: React.FC = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-full py-4 px-6 rounded-lg text-white font-semibold text-lg transition-all duration-200 cursor-pointer ${
-                  isSubmitting
+                className={`w-full py-4 px-6 rounded-lg text-white font-semibold text-lg transition-all duration-200 cursor-pointer ${isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transform hover:scale-[1.02] active:scale-[0.98]"
-                } focus:outline-none focus:ring-4 focus:ring-blue-200`}
+                  } focus:outline-none focus:ring-4 focus:ring-blue-200`}
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">

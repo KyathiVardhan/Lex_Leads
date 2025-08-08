@@ -23,6 +23,7 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
             phone_number_of_lead,
             email_of_lead,
             source_of_lead,
+            source_url,
             reference_name,
             reference_phone_number,
             intrested = 'COLD', // Default value
@@ -77,6 +78,7 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
             phone_number_of_lead,
             email_of_lead,
             source_of_lead,
+            source_url,
             reference_name,
             reference_phone_number,
             intrested,
@@ -115,6 +117,7 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
                 phone_number_of_lead,
                 email_of_lead,
                 source_of_lead,
+                source_url,
                 reference_name,
                 reference_phone_number,
                 intrested,
