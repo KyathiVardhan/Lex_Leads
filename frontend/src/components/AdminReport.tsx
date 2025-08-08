@@ -12,6 +12,7 @@ import {
   Award,
   Calendar,
   Edit,
+  PenIcon,
   Save,
   X,
   BarChart3,
@@ -575,7 +576,7 @@ const AdminLeadsReport = () => {
                             type="checkbox"
                             checked={
                               columnVisibility[
-                                col.key as keyof ColumnVisibility
+                              col.key as keyof ColumnVisibility
                               ]
                             }
                             onChange={(e) =>
@@ -728,7 +729,7 @@ const AdminLeadsReport = () => {
                       )}
                       {columnVisibility.reference_name && (
                         <td className="px-4 py-3 text-gray-700">
-                          {lead.source_of_lead === "referral" 
+                          {lead.source_of_lead === "referral"
                             ? (lead.reference_name && lead.reference_name.trim() ? lead.reference_name : '---')
                             : '---'
                           }
@@ -736,17 +737,17 @@ const AdminLeadsReport = () => {
                       )}
                       {columnVisibility.reference_phone_number && (
                         <td className="px-4 py-3 text-gray-600">
-                          {lead.source_of_lead === "referral" 
+                          {lead.source_of_lead === "referral"
                             ? (lead.reference_phone_number && lead.reference_phone_number.trim() ? (
-                                <a
-                                  href={`tel:${lead.reference_phone_number}`}
-                                  className="hover:text-blue-600 transition-colors"
-                                >
-                                  {lead.reference_phone_number}
-                                </a>
-                              ) : (
-                                '---'
-                              ))
+                              <a
+                                href={`tel:${lead.reference_phone_number}`}
+                                className="hover:text-blue-600 transition-colors"
+                              >
+                                {lead.reference_phone_number}
+                              </a>
+                            ) : (
+                              '---'
+                            ))
                             : '---'
                           }
                         </td>
@@ -863,27 +864,34 @@ const AdminLeadsReport = () => {
                             </>
                           ) : (
                             <>
-                              <button
-                                onClick={() => handleQuickEdit(lead)}
-                                className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
-                              >
-                                <Edit className="w-3 h-3" />
-                                Quick Edit
-                              </button>
-                              <button
-                                onClick={() => handleEditLead(lead)}
-                                className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700"
-                              >
-                                <Eye className="w-3 h-3" />
-                                View
-                              </button>
-                              <button
-                                onClick={() => handleViewConversationHistory(lead)}
-                                className="flex items-center gap-1 px-2 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700"
-                              >
-                                <MessageSquare className="w-3 h-3" />
-                                History
-                              </button>
+                              <div className="flex items-center gap-2">
+                                {/* Quick Edit */}
+                                <button
+                                  onClick={() => handleQuickEdit(lead)}
+                                  title="Quick Edit"
+                                  className="p-1 rounded-full hover:bg-blue-100 transition cursor-pointer"
+                                >
+                                  <PenIcon size={18} className="text-blue-500" />
+                                </button>
+
+                                {/* View Lead */}
+                                <button
+                                  onClick={() => handleEditLead(lead)}
+                                  title="View Lead"
+                                  className="p-1 rounded-full hover:bg-green-100 transition cursor-pointer"
+                                >
+                                  <Eye size={18} className="text-green-500" />
+                                </button>
+
+                                {/* Conversation History */}
+                                <button
+                                  onClick={() => handleViewConversationHistory(lead)}
+                                  title="Conversation History"
+                                  className="p-1 rounded-full hover:bg-purple-100 transition cursor-pointer"
+                                >
+                                  <MessageSquare size={18} className="text-purple-500" />
+                                </button>
+                              </div>
                             </>
                           )}
                         </div>

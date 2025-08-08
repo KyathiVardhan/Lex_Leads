@@ -15,6 +15,7 @@ import {
   Save,
   X,
   MessageSquare,
+  PenIcon
 
 } from "lucide-react";
 import API from "../api/axios";
@@ -215,13 +216,13 @@ const SalesPersonReport = () => {
 
   const hasQuickEditChanges = (lead: LeadData) => {
     if (quickEditingId !== lead._id) return false;
-    
+
     const hasChanges = (
       quickEditData.intrested !== lead.intrested ||
       quickEditData.follow_up_conversation !== lead.follow_up_conversation ||
       quickEditData.status !== lead.status
     );
-    
+
     return hasChanges;
   };
 
@@ -233,7 +234,7 @@ const SalesPersonReport = () => {
       const response = await API.put(`/sales/leads/${quickEditingId}`, quickEditData);
 
       if (response.data.success) {
-        
+
         setLeads((prevLeads) =>
           prevLeads.map((lead) =>
             lead._id === quickEditingId ? response.data.data : lead
@@ -414,7 +415,7 @@ const SalesPersonReport = () => {
                             type="checkbox"
                             checked={
                               columnVisibility[
-                                col.key as keyof ColumnVisibility
+                              col.key as keyof ColumnVisibility
                               ]
                             }
                             onChange={(e) =>
@@ -570,7 +571,7 @@ const SalesPersonReport = () => {
                       )}
                       {columnVisibility.reference_name && (
                         <td className="px-4 py-3 text-gray-700">
-                          {lead.source_of_lead === "referral" 
+                          {lead.source_of_lead === "referral"
                             ? (lead.reference_name && lead.reference_name.trim() ? lead.reference_name : '---')
                             : '---'
                           }
@@ -578,17 +579,17 @@ const SalesPersonReport = () => {
                       )}
                       {columnVisibility.reference_phone_number && (
                         <td className="px-4 py-3 text-gray-600">
-                          {lead.source_of_lead === "referral" 
+                          {lead.source_of_lead === "referral"
                             ? (lead.reference_phone_number && lead.reference_phone_number.trim() ? (
-                                <a
-                                  href={`tel:${lead.reference_phone_number}`}
-                                  className="hover:text-blue-600 transition-colors"
-                                >
-                                  {lead.reference_phone_number}
-                                </a>
-                              ) : (
-                                '---'
-                              ))
+                              <a
+                                href={`tel:${lead.reference_phone_number}`}
+                                className="hover:text-blue-600 transition-colors"
+                              >
+                                {lead.reference_phone_number}
+                              </a>
+                            ) : (
+                              '---'
+                            ))
                             : '---'
                           }
                         </td>
@@ -709,27 +710,34 @@ const SalesPersonReport = () => {
                               </>
                             ) : (
                               <>
-                                <button
-                                  onClick={() => handleQuickEdit(lead)}
-                                  className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors cursor-pointer"
-                                >
-                                  <Edit size={12} />
-                                  Quick Edit
-                                </button>
-                                <button
-                                  onClick={() => handleEditLead(lead)}
-                                  className="flex items-center gap-1 px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700 transition-colors cursor-pointer"
-                                >
-                                  <Edit size={12} />
-                                  View Edit
-                                </button>
-                                <button
-                                  onClick={() => handleViewConversationHistory(lead)}
-                                  className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors cursor-pointer"
-                                >
-                                  <MessageSquare size={12} />
-                                  History
-                                </button>
+                                <div className="flex items-center gap-2">
+                                  {/* Quick Edit */}
+                                  <button
+                                    onClick={() => handleQuickEdit(lead)}
+                                    title="Quick Edit"
+                                    className="p-1 rounded-full hover:bg-blue-100 transition cursor-pointer"
+                                  >
+                                    <PenIcon size={18} className="text-blue-500" />
+                                  </button>
+
+                                  {/* View Lead */}
+                                  <button
+                                    onClick={() => handleEditLead(lead)}
+                                    title="View Lead"
+                                    className="p-1 rounded-full hover:bg-green-100 transition cursor-pointer"
+                                  >
+                                    <Eye size={18} className="text-green-500" />
+                                  </button>
+
+                                  {/* Conversation History */}
+                                  <button
+                                    onClick={() => handleViewConversationHistory(lead)}
+                                    title="Conversation History"
+                                    className="p-1 rounded-full hover:bg-purple-100 transition cursor-pointer"
+                                  >
+                                    <MessageSquare size={18} className="text-purple-500" />
+                                  </button>
+                                </div>
                               </>
                             )}
                           </div>

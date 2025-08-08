@@ -296,10 +296,11 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
               <button
                 type="button"
                 onClick={() => setIsConversationHistoryOpen(true)}
-                className="flex items-center gap-1 px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors cursor-pointer"
+                className="text-purple-500 rounded text-xs cursor-pointer"
+                title="Conversation History"
               >
-                <MessageSquare size={12} />
-                View History
+                <MessageSquare size={18} />
+                
               </button>
             </div>
             <textarea
