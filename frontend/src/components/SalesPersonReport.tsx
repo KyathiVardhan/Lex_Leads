@@ -11,7 +11,6 @@ import {
   Mail,
   Award,
   Calendar,
-  Edit,
   Save,
   X,
   MessageSquare,

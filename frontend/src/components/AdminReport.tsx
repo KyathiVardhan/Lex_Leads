@@ -11,7 +11,6 @@ import {
   Mail,
   Award,
   Calendar,
-  Edit,
   PenIcon,
   Save,
   X,
