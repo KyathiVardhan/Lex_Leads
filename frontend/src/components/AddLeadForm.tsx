@@ -12,6 +12,8 @@ import {
   Share2,
   Link,
   Users,
+  Calendar,
+  FileText
 } from "lucide-react";
 import API from "../api/axios";
 
@@ -28,6 +30,8 @@ interface FormData {
   source_url: string;
   reference_name: string;
   reference_phone_number: string;
+  follow_up_date: string; // yyyy-MM-dd
+  payment_info: string;
 }
 
 interface FormErrors {
@@ -49,6 +53,8 @@ const AddLeadForm: React.FC = () => {
     source_url: "",
     reference_name: "",
     reference_phone_number: "",
+    follow_up_date: "",
+    payment_info: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -207,6 +213,8 @@ const AddLeadForm: React.FC = () => {
         email_of_lead: formData.email_of_lead,
         source_of_lead: formData.source_of_lead,
         source_url: formData.source_url,
+        ...(formData.follow_up_date && { follow_up_date: new Date(formData.follow_up_date).toISOString() }),
+        payment_info: formData.payment_info,
         intrested: 'WARM', // Default value as per model
         follow_up_conversation: '', // Default empty string
         status: 'Open', // Default status
@@ -235,6 +243,8 @@ const AddLeadForm: React.FC = () => {
         source_url: "",
         reference_name: "",
         reference_phone_number: "",
+        follow_up_date: "",
+        payment_info: "",
       });
 
       // Navigate back to dashboard after successful submission
@@ -606,6 +616,39 @@ const AddLeadForm: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Follow Up Date */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                  <Calendar className="w-4 h-4 text-blue-600" />
+                  Follow Up Date
+                </label>
+                <input
+                  type="date"
+                  name="follow_up_date"
+                  value={formData.follow_up_date}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 border-gray-300 focus:border-blue-600 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+
+              {/* Payment Info */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                  <FileText className="w-4 h-4 text-blue-600" />
+                  Payment Info
+                </label>
+                <input
+                  type="text"
+                  name="payment_info"
+                  value={formData.payment_info}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 border-gray-300 focus:border-blue-600 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  placeholder="e.g., Pending, Paid, or details"
+                />
+              </div>
+            </div>
 
             {/* Submit Button */}
             <div className="pt-6">

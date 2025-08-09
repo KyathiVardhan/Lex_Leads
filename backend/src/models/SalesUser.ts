@@ -21,6 +21,8 @@ export interface ISalesUser extends Document {
         reference_name: boolean;
         reference_phone_number: boolean;
         intrested: boolean;
+        follow_up_date: boolean;
+        payment_info: boolean;
         follow_up_conversation: boolean;
         status: boolean;
         created_at: boolean;
@@ -86,6 +88,8 @@ const salesUserSchema = new Schema<ISalesUser>({
         reference_name: { type: Boolean, default: false },
         reference_phone_number: { type: Boolean, default: false },
         intrested: { type: Boolean, default: true },
+        follow_up_date: { type: Boolean, default: true },
+        payment_info: { type: Boolean, default: true },
         follow_up_conversation: { type: Boolean, default: true },
         status: { type: Boolean, default: true },
         created_at: { type: Boolean, default: true },

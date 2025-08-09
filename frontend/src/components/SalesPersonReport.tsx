@@ -36,6 +36,8 @@ interface LeadData {
   reference_name: string;
   reference_phone_number: string;
   intrested: "HOT" | "COLD" | "WARM" | "NOT INTERESTED";
+  follow_up_date?: string | null;
+  payment_info?: string;
   follow_up_conversation: string;
   status: "Open" | "Close";
   created_by: string;
@@ -60,6 +62,8 @@ interface ColumnVisibility {
   reference_name: boolean;
   reference_phone_number: boolean;
   intrested: boolean;
+  follow_up_date?: boolean;
+  payment_info?: boolean;
   follow_up_conversation: boolean;
   status: boolean;
   created_at: boolean;
@@ -69,6 +73,8 @@ interface ColumnVisibility {
 interface QuickEditData {
   intrested: "HOT" | "COLD" | "WARM" | "NOT INTERESTED";
   follow_up_conversation: string;
+  follow_up_date?: string | null;
+  payment_info?: string;
   status: "Open" | "Close";
 }
 
@@ -89,12 +95,17 @@ const SalesPersonReport = () => {
     reference_name: false,
     reference_phone_number: false,
     intrested: true,
+    follow_up_date: true,
+    payment_info: true,
     follow_up_conversation: true,
     status: true,
     created_at: true,
     actions: true,
   });
   const [globalFilter, setGlobalFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [interestFilter, setInterestFilter] = useState<string>("");
+  const [followUpDateFilter, setFollowUpDateFilter] = useState<string>("");
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [editingLead, setEditingLead] = useState<LeadData | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -108,6 +119,8 @@ const SalesPersonReport = () => {
   const [quickEditData, setQuickEditData] = useState<QuickEditData>({
     intrested: "COLD",
     follow_up_conversation: "",
+    follow_up_date: "",
+    payment_info: "",
     status: "Open",
   });
   const [isQuickEditLoading, setIsQuickEditLoading] = useState(false);
@@ -205,6 +218,8 @@ const SalesPersonReport = () => {
     setQuickEditData({
       intrested: lead.intrested,
       follow_up_conversation: lead.follow_up_conversation,
+      follow_up_date: lead.follow_up_date ? lead.follow_up_date.slice(0,10) : '',
+      payment_info: lead.payment_info || '',
       status: lead.status,
     });
   };
@@ -219,6 +234,8 @@ const SalesPersonReport = () => {
     const hasChanges = (
       quickEditData.intrested !== lead.intrested ||
       quickEditData.follow_up_conversation !== lead.follow_up_conversation ||
+      (quickEditData.follow_up_date || '') !== (lead.follow_up_date ? lead.follow_up_date.slice(0,10) : '') ||
+      (quickEditData.payment_info || '') !== (lead.payment_info || '') ||
       quickEditData.status !== lead.status
     );
 
@@ -230,7 +247,13 @@ const SalesPersonReport = () => {
 
     setIsQuickEditLoading(true);
     try {
-      const response = await API.put(`/sales/leads/${quickEditingId}`, quickEditData);
+      const payload = {
+        ...quickEditData,
+        ...(quickEditData.follow_up_date
+          ? { follow_up_date: new Date(quickEditData.follow_up_date).toISOString() }
+          : { follow_up_date: null }),
+      };
+      const response = await API.put(`/sales/leads/${quickEditingId}`, payload);
 
       if (response.data.success) {
 
@@ -243,6 +266,8 @@ const SalesPersonReport = () => {
         setQuickEditData({
           intrested: "COLD",
           follow_up_conversation: "",
+          follow_up_date: "",
+          payment_info: "",
           status: "Open",
         });
       } else {
@@ -262,11 +287,20 @@ const SalesPersonReport = () => {
   };
 
   const filteredLeads = useMemo(() => {
-    const filtered = leads.filter((lead) =>
-      Object.values(lead).some((value) =>
-        value?.toString().toLowerCase().includes(globalFilter.toLowerCase())
+    const filtered = leads
+      .filter((lead) =>
+        Object.values(lead).some((value) =>
+          value?.toString().toLowerCase().includes(globalFilter.toLowerCase())
+        )
       )
-    );
+      .filter((lead) => (typeFilter ? lead.type_of_lead === typeFilter : true))
+      .filter((lead) => (interestFilter ? lead.intrested === interestFilter : true))
+      .filter((lead) => {
+        if (!followUpDateFilter) return true;
+        if (!lead.follow_up_date) return false;
+        const leadDate = lead.follow_up_date.slice(0, 10);
+        return leadDate === followUpDateFilter;
+      });
 
     // Sort by status first (Open first, Close last), then by interest priority
     return filtered.sort((a, b) => {
@@ -302,6 +336,8 @@ const SalesPersonReport = () => {
     { key: "reference_name", label: "Reference Name" },
     { key: "reference_phone_number", label: "Reference Phone" },
     { key: "intrested", label: "Interest" },
+    { key: "follow_up_date", label: "Follow Up Date" },
+    { key: "payment_info", label: "Payment" },
     { key: "follow_up_conversation", label: "Follow Up Conversation" },
     { key: "status", label: "Status" },
     { key: "created_at", label: "Created" },
@@ -334,7 +370,10 @@ const SalesPersonReport = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
+    if (!dateString) return '';
+    const d = new Date(dateString);
+    if (Number.isNaN(d.getTime())) return '';
+    return d.toLocaleDateString();
   };
 
   if (isLoading) {
@@ -376,7 +415,7 @@ const SalesPersonReport = () => {
             </h3>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
                 <div className="relative flex-1 sm:flex-none">
                   <Search
                     size={16}
@@ -390,6 +429,34 @@ const SalesPersonReport = () => {
                     className="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   />
                 </div>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Types</option>
+                {[...new Set(leads.map((l) => l.type_of_lead))].map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+              <select
+                value={interestFilter}
+                onChange={(e) => setInterestFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Interest</option>
+                <option value="HOT">HOT</option>
+                <option value="WARM">WARM</option>
+                <option value="COLD">COLD</option>
+                <option value="NOT INTERESTED">NOT INTERESTED</option>
+              </select>
+              <input
+                type="date"
+                value={followUpDateFilter}
+                onChange={(e) => setFollowUpDateFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                title="Filter by Follow Up Date"
+              />
               </div>
 
               <div className="relative">
@@ -620,6 +687,43 @@ const SalesPersonReport = () => {
                               )}`}
                             >
                               {lead.intrested}
+                            </span>
+                          )}
+                        </td>
+                      )}
+                      {columnVisibility.follow_up_date && (
+                        <td className="px-4 py-3">
+                          {quickEditingId === lead._id ? (
+                            <input
+                              type="date"
+                              value={quickEditData.follow_up_date || ''}
+                              onChange={(e) =>
+                                handleQuickEditChange('follow_up_date', e.target.value)
+                              }
+                              className="w-40 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                          ) : (
+                            <span className="text-gray-700">
+                              {lead.follow_up_date ? formatDate(lead.follow_up_date) : '-'}
+                            </span>
+                          )}
+                        </td>
+                      )}
+                      {columnVisibility.payment_info && (
+                        <td className="px-4 py-3">
+                          {quickEditingId === lead._id ? (
+                            <input
+                              type="text"
+                              value={quickEditData.payment_info || ''}
+                              onChange={(e) =>
+                                handleQuickEditChange('payment_info', e.target.value)
+                              }
+                              className="w-48 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Payment info"
+                            />
+                          ) : (
+                            <span className="text-gray-700">
+                              {lead.payment_info && lead.payment_info.trim() ? lead.payment_info : '-'}
                             </span>
                           )}
                         </td>

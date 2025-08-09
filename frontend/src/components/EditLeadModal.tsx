@@ -16,6 +16,8 @@ interface LeadData {
   reference_name: string;
   reference_phone_number: string;
   intrested: 'HOT' | 'COLD' | 'WARM' | 'NOT INTERESTED';
+  follow_up_date?: string | null;
+  payment_info?: string;
   follow_up_conversation: string;
   status: 'Open' | 'Close';
   created_by: string;
@@ -42,7 +44,9 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
       setFormData({
         intrested: lead.intrested,
         follow_up_conversation: lead.follow_up_conversation,
-        status: lead.status
+        status: lead.status,
+        follow_up_date: lead.follow_up_date ? lead.follow_up_date.slice(0, 10) : '',
+        payment_info: lead.payment_info || ''
       });
       setOriginalFollowUp(lead.follow_up_conversation);
       setErrors({});
@@ -74,7 +78,13 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
 
     setIsLoading(true);
     try {
-      const response = await API.put(`/sales/leads/${lead._id}`, formData);
+      const payload: any = { ...formData };
+      if (formData.follow_up_date) {
+        payload.follow_up_date = new Date(formData.follow_up_date as string).toISOString();
+      } else if (formData.follow_up_date === '') {
+        payload.follow_up_date = null;
+      }
+      const response = await API.put(`/sales/leads/${lead._id}`, payload);
       
       if (response.data.success) {
         // Check if follow up conversation has changed and save to conversation history
@@ -285,6 +295,33 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
               </div>
             </div>
           )}
+
+          {/* Follow Up Date - Editable and Payment Info - Editable */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Follow Up Date
+              </label>
+              <input
+                type="date"
+                value={(formData.follow_up_date as string) || ''}
+                onChange={(e) => handleInputChange('follow_up_date', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Payment Info
+              </label>
+              <input
+                type="text"
+                value={(formData.payment_info as string) || ''}
+                onChange={(e) => handleInputChange('payment_info', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., Pending, Paid, or details"
+              />
+            </div>
+          </div>
 
           {/* Follow Up Conversation - Editable */}
           <div>

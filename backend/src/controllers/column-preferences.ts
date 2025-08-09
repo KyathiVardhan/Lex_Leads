@@ -47,6 +47,8 @@ export const getColumnPreferences = async (req: AuthenticatedRequest, res: Respo
             reference_name: false,
             reference_phone_number: false,
             intrested: true,
+            follow_up_date: true,
+            payment_info: true,
             follow_up_conversation: true,
             status: true,
             created_at: true,
@@ -55,7 +57,7 @@ export const getColumnPreferences = async (req: AuthenticatedRequest, res: Respo
 
         res.status(200).json({
             success: true,
-            data: user.columnPreferences || defaultPreferences
+            data: { ...defaultPreferences, ...(user.columnPreferences || {}) }
         });
 
     } catch (error) {
@@ -93,7 +95,7 @@ export const saveColumnPreferences = async (req: AuthenticatedRequest, res: Resp
         const requiredFields = [
             'type_of_lead', 'project_name', 'name_of_lead', 'designation_of_lead',
             'company_name', 'phone_number_of_lead', 'email_of_lead', 'source_of_lead',
-            'reference_name', 'reference_phone_number', 'intrested', 'follow_up_conversation',
+            'reference_name', 'reference_phone_number', 'intrested', 'follow_up_date', 'payment_info', 'follow_up_conversation',
             'status', 'created_at', 'actions'
         ];
 

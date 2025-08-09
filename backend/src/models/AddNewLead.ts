@@ -13,6 +13,8 @@ export interface IAddNewLead extends Document {
     reference_name: string;
     reference_phone_number: string;
     intrested: 'HOT' | 'COLD' | 'WARM' | 'NOT INTERESTED';
+    follow_up_date?: Date | null;
+    payment_info?: string;
     follow_up_conversation: string;
     status: 'Open' | 'Close';
     created_by: mongoose.Types.ObjectId;
@@ -70,10 +72,10 @@ const addNewLeadSchema = new Schema<IAddNewLead>({
         trim: true,
         minlength: 3
     },
-    source_url: {
-        type: String,
-        trime: true
-    },
+     source_url: {
+         type: String,
+         trim: true
+     },
     reference_name: {
         type: String,
         trim: true,
@@ -91,6 +93,15 @@ const addNewLeadSchema = new Schema<IAddNewLead>({
         default: 'COLD',
         trim: true,
 
+    },
+    follow_up_date: {
+        type: Date,
+        default: null
+    },
+    payment_info: {
+        type: String,
+        trim: true,
+        default: ''
     },
     follow_up_conversation: {
         type: String,

@@ -16,6 +16,8 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
         const {
             intrested,
             follow_up_conversation,
+            follow_up_date,
+            payment_info,
             status
         } = req.body;
 
@@ -67,7 +69,7 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
         }
 
         console.log('Updating lead:', leadId, 'for user:', req.userInfo.userName);
-        console.log('Update data:', { intrested, follow_up_conversation, status });
+        console.log('Update data:', { intrested, follow_up_date, payment_info, follow_up_conversation, status });
 
         // Update only the allowed fields
         const updatedLead = await AddNewLead.findByIdAndUpdate(
@@ -75,6 +77,8 @@ const updateLead = async (req: AuthenticatedRequest, res: Response) => {
             {
                 intrested,
                 follow_up_conversation,
+                follow_up_date: follow_up_date ? new Date(follow_up_date) : null,
+                payment_info,
                 status,
                 updated_at: new Date()
             },

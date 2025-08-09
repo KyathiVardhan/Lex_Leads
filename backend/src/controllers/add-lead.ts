@@ -24,6 +24,8 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
             email_of_lead,
             source_of_lead,
             source_url,
+            follow_up_date,
+            payment_info,
             reference_name,
             reference_phone_number,
             intrested = 'COLD', // Default value
@@ -33,7 +35,7 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
 
         // Get the current user's ID from the authenticated request
         const currentUserId = req.userInfo?.userId;
-        
+
         if (!currentUserId) {
             res.status(401).json({
                 success: false,
@@ -79,6 +81,8 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
             email_of_lead,
             source_of_lead,
             source_url,
+            follow_up_date: follow_up_date ? new Date(follow_up_date) : null,
+            payment_info,
             reference_name,
             reference_phone_number,
             intrested,
@@ -118,6 +122,8 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
                 email_of_lead,
                 source_of_lead,
                 source_url,
+                follow_up_date,
+                payment_info,
                 reference_name,
                 reference_phone_number,
                 intrested,
@@ -128,7 +134,7 @@ const addLeadsToSales = async (req: AuthenticatedRequest, res: Response) => {
         });
     } catch (error: any) {
         console.error("Error adding lead:", error);
-        
+
         // Handle specific mongoose validation errors
         if (error.name === 'ValidationError') {
             const validationErrors = Object.values(error.errors).map((err: any) => err.message);
