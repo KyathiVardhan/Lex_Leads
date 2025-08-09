@@ -337,7 +337,7 @@ const SalesPersonReport = () => {
     { key: "reference_phone_number", label: "Reference Phone" },
     { key: "intrested", label: "Interest" },
     { key: "follow_up_date", label: "Follow Up Date" },
-    { key: "payment_info", label: "Payment" },
+    { key: "payment_info", label: "Payment Info" },
     { key: "follow_up_conversation", label: "Follow Up Conversation" },
     { key: "status", label: "Status" },
     { key: "created_at", label: "Created" },
@@ -718,7 +718,7 @@ const SalesPersonReport = () => {
                               onChange={(e) =>
                                 handleQuickEditChange('payment_info', e.target.value)
                               }
-                              className="w-48 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              className="w-64 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                               placeholder="Payment info"
                             />
                           ) : (
