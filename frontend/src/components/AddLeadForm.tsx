@@ -132,13 +132,13 @@ const AddLeadForm: React.FC = () => {
     }
 
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email_of_lead) {
       newErrors.email_of_lead = "Email is required";
     } else if (!emailRegex.test(formData.email_of_lead)) {
-      newErrors.email_of_lead = "Email must be valid and end with .com";
+      newErrors.email_of_lead = "Please enter a valid email address";
     }
-
+    
     // Source validation
     if (!formData.source_of_lead) {
       newErrors.source_of_lead = "Please select a source";
